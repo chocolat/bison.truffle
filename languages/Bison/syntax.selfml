@@ -1,0 +1,41 @@
+(root source.bison
+    (zone meta.prologue.bison
+        (start
+            (regex [^%\{]))
+        (end
+            (regex [%\}]))
+        (subzones
+            (include source.c)))
+    (zone meta.declarations.bison
+        (start
+            (regex [^(?!%%$)]))
+        (end
+            (regex [^(?=%%$)])))
+    (zone
+        (start %%
+            (anchor.both))
+        (end
+            (regex $.^))
+        (subzones
+            (zone
+                (inner-identifier meta.rules.bison)
+                (start
+                    (regex [^(?!%%$)]))
+                (end
+                    (regex [^(?=%%$)]))
+                (subzones
+                    (include source.c)))
+            (zone
+                (inner-identifier meta.epilogue.bison)
+                (start %%
+                    (anchor.both))
+                (end
+                    (regex $.^))
+                (subzones
+                    (zone source.c
+                        (start
+                            (regex ^))
+                        (end
+                            (regex $.^))
+                        (subzones
+                            (include source.c))))))))
